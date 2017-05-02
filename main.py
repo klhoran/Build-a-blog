@@ -45,7 +45,9 @@ class BlogPost(db.Model):
 class MainHandler(Handler):
 
     def render_addpost(self, title="", thoughts="", error=""):
-        self.render("add_blog.html", title = title, thoughts = thoughts, error = error)
+        bposts = db.GqlQuery("SELECT * FROM BlogPost ORDER BY created Desc")
+        self.render("add_blog.html", title = title, thoughts = thoughts, error = error, bposts = bposts)
+
 
     def get(self):
         self.render_addpost()
@@ -55,8 +57,8 @@ class MainHandler(Handler):
         thoughts = self.request.get("thoughts")
 
         if title and thoughts:
-            bpost = BlogPost(title = title, thoughts = thoughts)
-            bpost.put()
+            bp = BlogPost(title = title, thoughts = thoughts)
+            bp.put()
 
             self.redirect("/")
         else:
