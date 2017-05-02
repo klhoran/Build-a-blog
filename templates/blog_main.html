@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+
+<hr>
+{% for post in bposts %}
+  <div class="post">
+    <div class="post-title">{{post.title}}</div>
+    <pre class="post-thoughts">{{post.thoughts}}</pre>
+  <hr>
+  </div>
+{% endfor %}

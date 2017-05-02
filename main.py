@@ -25,7 +25,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 
 
 
-class Handler(webapp2.RequestHandler):
+class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 
@@ -41,13 +41,17 @@ class BlogPost(db.Model):
     thoughts = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
+class BlogMain(BlogHandler):
+    def get(self):
+        bposts = db.GqlQuery("SELECT * FROM BlogPost ORDER BY created Desc LIMIT 5")
+        self.render("blog_main.html", bposts = bposts)
 
-class MainHandler(Handler):
+
+class AddPost(BlogHandler):
 
     def render_addpost(self, title="", thoughts="", error=""):
-        bposts = db.GqlQuery("SELECT * FROM BlogPost ORDER BY created Desc")
-        self.render("add_blog.html", title = title, thoughts = thoughts, error = error, bposts = bposts)
 
+        self.render("add_blog.html", title = title, thoughts = thoughts, error = error)
 
     def get(self):
         self.render_addpost()
@@ -60,7 +64,7 @@ class MainHandler(Handler):
             bp = BlogPost(title = title, thoughts = thoughts)
             bp.put()
 
-            self.redirect("/")
+            self.redirect("/blog")
         else:
             error = "Both Title and Thoughts must be filled in"
             self.render_addpost(title, thoughts, error)
@@ -69,5 +73,7 @@ class MainHandler(Handler):
 
 app = webapp2.WSGIApplication([
 
-    ('/', MainHandler)
+    ('/blog', BlogMain),
+    ('/newpost', AddPost),
+
 ], debug=True)
