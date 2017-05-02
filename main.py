@@ -18,8 +18,10 @@ import webapp2
 import os
 import jinja2
 
+from google.appengine.ext import db
+
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir))
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 
 
@@ -34,11 +36,36 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+class BlogPost(db.Model):
+    title = db.StringProperty(required = True)
+    thoughts = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+
 
 class MainHandler(Handler):
+
+    def render_addpost(self, title="", thoughts="", error=""):
+        self.render("add_blog.html", title = title, thoughts = thoughts, error = error)
+
     def get(self):
-        self.render("add_blog.html")
+        self.render_addpost()
+
+    def post(self):
+        title = self.request.get("title")
+        thoughts = self.request.get("thoughts")
+
+        if title and thoughts:
+            bpost = BlogPost(title = title, thoughts = thoughts)
+            bpost.put()
+
+            self.redirect("/")
+        else:
+            error = "Both Title and Thoughts must be filled in"
+            self.render_addpost(title, thoughts, error)
+
+
 
 app = webapp2.WSGIApplication([
+
     ('/', MainHandler)
 ], debug=True)
