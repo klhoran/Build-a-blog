@@ -64,16 +64,30 @@ class AddPost(BlogHandler):
             bp = BlogPost(title = title, thoughts = thoughts)
             bp.put()
 
-            self.redirect("/blog")
+            self.redirect('/blog/' + str(bp.key().id()))
         else:
             error = "Both Title and Thoughts must be filled in"
             self.render_addpost(title, thoughts, error)
+
+class ViewPostHandler(webapp2.RequestHandler):
+    def get(self, id):
+        post = BlogPost.get_by_id(int(id))
+        if post:
+            t = jinja_env.get_template("single_post.html")
+            content = t.render(post = post)
+            self.response.write(content)
+        else:
+            self.respone.write("No such blog entry")
+
 
 
 
 app = webapp2.WSGIApplication([
 
     ('/blog', BlogMain),
-    ('/newpost', AddPost),
+    ('/blog/', BlogMain),
+    ('/blog/newpost', AddPost),
+    ('/blog/newpost/', AddPost),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 
 ], debug=True)

@@ -1,23 +1,15 @@
-<!DOCTYPE html>
-
-<form method = "post">
-<div align="left">
-    <h1>Build A Blog</h1>
-    <h3>Add Post</h3>
-    <h4>Title</h4>
-    <input type="text" name="title" value="{{title}}">
-    <h4>Thoughts</h4>
-    <textarea name="thoughts">{{thoughts}}</textarea>
-    <h5 style="color: red" name="error">{{error}}</h5>
-    <br>
-    <button>Submit</button>
-</div>
-</form>
-
-<hr>
-{% for post in bposts %}
-  <div class="post">
-    <div class="post-title">{{post.title}}</div>
-    <pre class="post-thoughts">{{post.thoughts}}</pre>
-  </div>
-{% endfor %}
+{% extends "base.html" %}
+{% block content %}
+  <form method = "post">
+    <div align="left">
+      <h3>Add Post</h3>
+      <h4>Title</h4>
+      <input type="text" name="title" value="{{title}}">
+      <h4>Thoughts</h4>
+      <textarea name="thoughts">{{thoughts}}</textarea>
+      <h5 style="color: red" name="error">{{error}}</h5>
+      <br>
+      <button>Submit</button>
+    </div>
+  </form>
+{% endblock %}
