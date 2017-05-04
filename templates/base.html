@@ -1,11 +1,44 @@
 <!DOCTYPE html>
+
 <html>
 
   <head>
+    <style>
 
+    body {
+        background-color: lightblue;
+        font-family: cursive;
+        text-align: center;
+    }
+    textarea {
+        width: 200px;
+        height: 200px;
+        font-size: 16px;
+    }
+    .error {
+        color: red;
+    }
+    h2 {
+        font-size: 24pts
+        font-weight:bold;
+    }
+
+    h3 {
+        font-size: 18pts
+    }
+    .post-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .post-thoughts {
+      font-size: 12px;
+    }
+
+    </style>
     <h1>Build A Blog<h1>
 
   </head>
+
 
   <body>
     {% block content %}
